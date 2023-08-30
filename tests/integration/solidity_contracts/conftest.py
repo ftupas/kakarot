@@ -64,6 +64,48 @@ def get_solidity_contract(starknet, contract_account_class, kakarot):
 
 
 @pytest.fixture(scope="package")
+def get_nonce():
+    """
+    Fixture to get the nonce of a deployed starknet contract.
+    """
+
+    async def _factory(starknet_contract: StarknetContract):
+        return await starknet_contract.state.state.get_nonce_at(
+            starknet_contract.contract_address
+        )
+
+    return _factory
+
+
+@pytest.fixture(scope="package")
+def get_storage_at():
+    """
+    Fixture to get the storage of a deployed starknet contract at a particular key.
+    """
+
+    async def _factory(starknet_contract: StarknetContract, key: int):
+        return await starknet_contract.state.state.get_storage_at(
+            starknet_contract.contract_address, key
+        )
+
+    return _factory
+
+
+@pytest.fixture(scope="package")
+def set_storage_at():
+    """
+    Fixture to set the storage of a deployed starknet contract at a particular key.
+    """
+
+    async def _factory(starknet_contract: StarknetContract, key: int, value: int):
+        return await starknet_contract.state.state.set_storage_at(
+            starknet_contract.contract_address, key, value
+        )
+
+    return _factory
+
+
+@pytest.fixture(scope="package")
 def deploy_bytecode(kakarot, deploy_eoa):
     """
     Fixture to deploy a bytecode in kakarot. Returns the EVM address of the deployed contract,
