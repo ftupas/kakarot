@@ -188,6 +188,27 @@ class TestPlainOpcodes:
             ).result.nonce
             assert nonce_final == nonce_initial + count
 
+        async def test_should_create_contract(
+            self,
+            plain_opcodes,
+            plain_opcodes_deployer,
+        ):
+            count = 1
+            nonce_initial = (
+                await plain_opcodes.contract_account.get_nonce().call()
+            ).result.nonce
+
+            evm_addresses = await plain_opcodes.create(
+                bytecode="0x604260005260206000F3",
+                count=count,
+                caller_address=plain_opcodes_deployer,
+            )
+            assert len(evm_addresses) == count
+            nonce_final = (
+                await plain_opcodes.contract_account.get_nonce().call()
+            ).result.nonce
+            assert nonce_final == nonce_initial + count
+
         @pytest.mark.skip(
             """
             TODO: need to fix when there is no return data from the bytecode execution,
